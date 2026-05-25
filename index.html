@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DropVid — Download Any Video</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="glow-orb"></div>
+
+  <div class="wrapper">
+    <header class="header">
+      <div class="logo-row">
+        <div class="logo-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 12l-4 4-4-4 1.41-1.41L11 13.17V8h2v5.17l2.59-2.58L16 12z"/>
+            <path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm0 18a8 8 0 110-16 8 8 0 010 16z"/>
+          </svg>
+        </div>
+        <div class="logo-text">DROPVID</div>
+      </div>
+      <p class="tagline">Download from <span>any platform</span> — fast, free, no limits.</p>
+    </header>
+
+    <div class="main-card">
+      <div class="section-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="23 7 16 12 23 17 23 7"/>
+          <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+        </svg>
+        Paste up to 10 video links
+      </div>
+
+      <div class="url-grid" id="urlGrid"></div>
+
+      <div class="btn-row">
+        <button class="fetch-btn" id="fetchBtn" onclick="fetchVideos()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          Fetch Videos
+        </button>
+        <button class="clear-btn" id="clearBtn" onclick="clearAll()">Clear</button>
+      </div>
+
+      <div class="error-banner" id="errorBanner"></div>
+    </div>
+
+    <div class="results-section" id="results"></div>
+
+    <footer class="footer">
+      <p>DropVid © 2026 — Powered by <span>yt-dlp</span></p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
