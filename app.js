@@ -80,6 +80,11 @@ function renderResults(results) {
       return;
     }
 
+    const qualities = r.qualities && r.qualities.length ? r.qualities : ["720", "audio"];
+    const qualityOptions = qualities
+      .map(q => `<option value="${q}">${q === "audio" ? "Audio (MP3)" : `${q}p`}</option>`)
+      .join("");
+
     const card = document.createElement("div");
     card.className = "video-card";
     card.innerHTML = `
@@ -93,6 +98,9 @@ function renderResults(results) {
         <p class="platform-badge">${r.platform || ""}</p>
         <h3 class="video-title">${r.title}</h3>
         <div class="quality-row">
+          <select class="quality-select" id="qualitySelect${i}">
+            ${qualityOptions}
+          </select>
           <button class="dl-btn" id="dlBtn${i}">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M12 3v13M5 16l7 7 7-7"/><path d="M3 21h18"/>
@@ -111,6 +119,8 @@ function renderResults(results) {
 async function downloadVideo(url, index) {
   const btn = document.getElementById(`dlBtn${index}`);
   const errEl = document.getElementById(`dlError${index}`);
+  const qualitySelect = document.getElementById(`qualitySelect${index}`);
+  const quality = qualitySelect ? qualitySelect.value : "720";
 
   btn.disabled = true;
   btn.innerHTML = `<span class="spinner"></span> Downloading...`;
@@ -120,19 +130,20 @@ async function downloadVideo(url, index) {
     const res = await fetch(`${API_BASE}/download`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url }),
+      body: JSON.stringify({ url, quality }),
     });
 
     if (!res.ok) {
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       throw new Error(data.detail || "Download failed");
     }
 
+    const ext = quality === "audio" ? "mp3" : "mp4";
     const blob = await res.blob();
     const blobUrl = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = blobUrl;
-    link.download = `dropvid-${index + 1}.mp4`;
+    link.download = `dropvid-${index + 1}.${ext}`;
     link.click();
     window.URL.revokeObjectURL(blobUrl);
 
