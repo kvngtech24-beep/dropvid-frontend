@@ -80,9 +80,22 @@ function renderResults(results) {
       return;
     }
 
-    const qualities = r.qualities && r.qualities.length ? r.qualities : ["720", "audio"];
+    const qualities = r.qualities && r.qualities.length
+      ? r.qualities
+      : [{ value: "worst", label: "Data Saver", size_mb: null }, { value: "audio", label: "Audio (MP3)", size_mb: null }];
+
+    const dataSaver = qualities.find(q => q.value === "worst");
+    const videoQualities = qualities.filter(q => q.value !== "audio" && q.value !== "worst");
+    const defaultQuality = dataSaver
+      ? "worst"
+      : (videoQualities.length ? videoQualities[videoQualities.length - 1].value : qualities[0].value);
+
     const qualityOptions = qualities
-      .map(q => `<option value="${q}">${q === "audio" ? "Audio (MP3)" : `${q}p`}</option>`)
+      .map(q => {
+        const sizeText = q.size_mb ? ` (~${q.size_mb} MB)` : "";
+        const selected = q.value === defaultQuality ? "selected" : "";
+        return `<option value="${q.value}" ${selected}>${q.label}${sizeText}</option>`;
+      })
       .join("");
 
     const card = document.createElement("div");
@@ -138,7 +151,9 @@ async function downloadVideo(url, index) {
       throw new Error(data.detail || "Download failed");
     }
 
-    const ext = quality === "audio" ? "mp3" : "mp4";
+    const contentDisposition = res.headers.get("Content-Disposition") || "";
+    const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+    const ext = filenameMatch ? filenameMatch[1].split(".").pop() : (quality === "audio" ? "mp3" : "mp4");
     const blob = await res.blob();
     const blobUrl = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
