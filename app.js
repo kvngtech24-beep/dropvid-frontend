@@ -1,4 +1,4 @@
-const API_BASE = "https://web-production-febd6.up.railway.app";
+const API_BASE = "https://dropvid-backend.onrender.com";
 
 const grid = document.getElementById("urlGrid");
 for (let i = 0; i < 10; i++) {
